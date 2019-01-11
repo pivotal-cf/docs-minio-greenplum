@@ -4,9 +4,11 @@ owner: Partners
 ---
 
 This documentation describes Minio for Pivotal Greenplum.
+
+## <a id='overview'></a>Overview
 Minio is an open source object storage server with an Amazon S3-compatible API. Greenplum DB can use [S3 extension](https://gpdb.docs.pivotal.io/570/admin_guide/external/g-s3-protocol.html) to access objects that are stored inside Minio.
 
-## <a id='overview'></a>Key Features
+## <a id='key-features'></a>Key Features
 Minio for Greenplum includes the following key features:
 
 * **Amazon S3-compatible:** Amazon S3 API is the de facto standard for object storage.
@@ -17,6 +19,35 @@ Data protection code is accelerated using SIMD instructions on x64 and ARM CPUs.
 * **Highly available:** Minio server can tolerate up to (N/2)-1 node failures in a distributed setup. 
 In addition, you can configure Minio server to continuously mirror data between Minio and
 any Amazon S3-compatible server.
+
+## <a id="snapshot"></a>Product Snapshot
+
+The following table provides version and version-support information about PRODUCT-NAME.
+
+<table class="nice">
+    <th>Element</th>
+    <th>Details</th>
+    <tr>
+        <td>Release date</td>
+        <td>January 15, 2019</td>
+    </tr>
+    <tr>
+        <td>Software component version</td>
+        <td>YOUR-SOFTWARE-COMPONENT-VERSION-NUMBER</td>
+    </tr>
+    <tr>
+        <td>Compatible Pivotal Greenplum version(s)</td>
+        <td>vYOUR-COMPATIBLE-GREENPLUM-VERSION (Ex. 2.2.x, 2.3.x, and 2.4.x)</td>
+    </tr>
+    <tr>
+        <td>IaaS support</td>
+        <td>AWS?, Azure?, GCP?, OpenStack?, and vSphere?</td>
+    </tr>
+    <tr>
+        <td>IPsec support?</td>
+        <td>[Yes or No]</td>
+    </tr>
+</table>
 
 ## <a id="feedback"></a>Support and License
 For a commercial subscription, please contact pivotal@minio.io
