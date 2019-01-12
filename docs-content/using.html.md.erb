@@ -5,21 +5,21 @@ owner: Partners
 
 This topic describes how to use Minio for Pivotal Greenplum.
 
-##<a id='setup-minio'></a> Setup Minio
+##<a id='setup-minio'></a> Set Up Minio
 
-1. Setup and configure Minio as explained in the document: https://docs.minio.io/docs/distributed-minio-quickstart-guide.html
+1. Set up and configure Minio as explained in the document: https://docs.minio.io/docs/distributed-minio-quickstart-guide.html
 
 2. Create a bucket called "testbucket" and upload [stocks.csv](https://raw.githubusercontent.com/kongc-organization/greenplum-minio/master/minio/S3Examples/stocks.csv) into the bucket.
 
-##<a id='gpdb-docker'></a> Setup Greenplum Docker Instance
+##<a id='gpdb-docker'></a> Set Up a Greenplum Docker Instance
 
-1. Pull the Greenplum Database (GPDB) Docker image
+1. Pull the Greenplum Database (GPDB) Docker image.
 
     ```
     docker pull kochanpivotal/gpdb5oss
     ```
 
-2. Run the GPDB docker container
+2. Run the GPDB docker container.
 
     ```
     ubuntu@host:~$ docker run -it --hostname=gpdbsne --publish 5432:5432 --publish 88:22 kochanpivotal/gpdb5oss bin/bash
@@ -29,7 +29,7 @@ This topic describes how to use Minio for Pivotal Greenplum.
     root@gpdbsne:/#
     ```
 
-3. Start GPDB in the container
+3. Start GPDB in the container.
 
     ```
     ubuntu@host:~$ root@gpdbsne:/# startGPDB.sh 
@@ -71,7 +71,7 @@ This topic describes how to use Minio for Pivotal Greenplum.
     root@gpdbsne:/#
     ```
 
-4. Create s3.conf
+4. Create an s3 protocol configuration file named `s3.conf` in `gpadmin` user's home directory.
 
     ```
     root@gpdbsne:/# cat <<EOF > /home/gpadmin/s3.conf
@@ -87,7 +87,7 @@ This topic describes how to use Minio for Pivotal Greenplum.
     root@gpdbsne:/# 
     ```
 
-5. Run psql
+5. Run the `psql` utility.
 
     ```
     root@gpdbsne:/# psql -h localhost -U gpadmin gpadmin
@@ -97,7 +97,7 @@ This topic describes how to use Minio for Pivotal Greenplum.
     gpadmin=#
     ```
 
-6. Type these commands to create the read and write function for S3
+6. Type these commands to create the read and write function for S3.
 
     ```
     CREATE OR REPLACE FUNCTION read_from_s3() RETURNS integer AS'$libdir/gps3ext.so','s3_import' LANGUAGE C STABLE;
@@ -119,7 +119,7 @@ This topic describes how to use Minio for Pivotal Greenplum.
     gpadmin=# 
     ```
 
-7. Create external table that refers to the  Minio instance that uses the hostname minio1 with port 9000
+7. Create external table that refers to the  Minio instance that uses the hostname minio1 with port 9000.
 
     ```
     CREATE EXTERNAL TABLE stock_fact_external (
