@@ -6,21 +6,21 @@ owner: Partners
 This documentation describes Minio for Pivotal Greenplum.
 
 ## <a id='overview'></a>Overview
-Minio is an open source object storage server with an Amazon S3-compatible API. Through this integration, your 
-Greenplum database can use the [S3 protocol](https://gpdb.docs.pivotal.io/latest/admin_guide/external/g-s3-protocol.html) 
-to access objects that are stored inside Minio.
+Minio for Pivotal Greenplum provides a high-performance object store for that is 100% compatible with the Amazon S3 API. Greenplum developers use the [S3 protocol](https://gpdb.docs.pivotal.io/latest/admin_guide/external/g-s3-protocol.html) to access objects that are stored in the Minio object store. The Minio object store can be used for loading and unloading Greenplum data, as a data source for federated queries, and as a target for Greenplum backups.
 
 ## <a id='key-features'></a>Key Features
 Minio for Greenplum includes the following key features:
 
 * **Amazon S3-compatible:** Amazon S3 API is the de-facto standard for object storage.
-Minio implements the Amazon S3 API.
-* **Data protection:** Minio protects data against hardware failures using erasure code and bitrot detection. 
-You may lose up to half the number of drives and still recover from it. 
-Data protection code is accelerated using SIMD instructions on x64 and ARM CPUs.
-* **Highly available:** Minio server can tolerate up to (N/2)-1 node failures in a distributed setup. 
-In addition, you can configure Minio server to continuously mirror data between Minio and
-any Amazon S3-compatible server.
+Minio for Pivotal Greenplum provides a high-performance, highly available object store that is designed for large-scale private cloud data infrastructure. 
+* **100% Amazon S3 Compatible:** Minio implements the Amazon S3 v2/v4 API.
+* **Data protection:** Minio protects data against hardware failures using erasure code and bitrot detection. Minio can lose up to half the number of drives and continue to serve data. Data protection code is accelerated using SIMD instructions on x64 and ARM CPUs.
+* **Highly available:** Minio can tolerate up to (N/2)-1 node failures in a distributed setup. For additional levels of availability Minio servers can be configured to continuously mirror data between Minio servers and any other Amazon S3 compatible server.
+* **Lambda Compute:** Minio servers trigger Lambda functions through its AWS compatible SNS/SQS event notification service. Supported targets are message queues (Kafka, NATS, AMQP, MQTT) and Webhooks. Thumbnail generation, OCR, and audit compliance are good examples of lambda computing.
+* **Encryption and Tamper-Proof:** Minio provides tamper-proof encryption for each object with zero performance impact. Both server side and client side encryption is supported. Minio supports AES-256-GCM, ChaCha20-Poly1305 and AES-CBC.
+* **Flexible:** Minio can be deployed on bare-metal servers or as a virtual machines in clusters of 1 to 32 nodes. Clusters are combined into federations to support web-scale Object store deployments.
+* **Pluggable Storage Backend:** Minio's supports DAS and external storage such as NAS, Google Cloud Storage, and Azure Blob Storage. The Minio S3 API is 100% compatible with the Amazon S3 API and the objects are stored natively on NAS, GCS or Azure. Minio works with existing so no migration is required to access externally stored objects via Minio.
+
 
 ## <a id="snapshot"></a>Product Snapshot
 
@@ -47,5 +47,19 @@ The following table provides version and version-support information about Minio
     </tr>
 </table>
 
-## <a id="feedback"></a>Support and License
-For a commercial subscription, please contact <a href="mailto:pivotal@minio.io">pivotal@minio.io</a>.
+
+## <a id="requirements"></a>Requirements
+None.
+
+## <a id="feedback"></a>Feedback
+For issues, feature requests, or questions send an email to <a href="mailto:pivotal@minio.io">pivotal@minio.io</a>.
+
+## <a id="support"></a>Support
+For a commercial support subscription please contact <a href="mailto:pivotal@minio.io">pivotal@minio.io</a>.
+
+## <a id="license"></a>License
+Minio for Pivotal Greenplum is released under the Apache License Version 2.0.
+
+
+## <a id="reading"></a>Further Reading
+Minio documentation is located at <a href="https://docs.minio.io/">docs.minio.io</a>.
