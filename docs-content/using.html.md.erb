@@ -5,165 +5,43 @@ owner: Partners
 
 This topic describes how to use Minio for Pivotal Greenplum.
 
-##<a id='setup-minio'></a> Set Up Minio
+After installing Minio for Pivotal Greenplum developers can use the Minio object store with Greenplum. There are three uses cases for Minio for Pivotal Greenplum:
 
-1. Set up and configure Minio as explained in the document: https://docs.minio.io/docs/distributed-minio-quickstart-guide.html
+* Store Greeplum backups in a Minio object store.
+* Load data from a Minio object store to Greenplum.
+* Create Greenplum federated queries to include data stored in a Minio object store.
 
-2. Create a bucket called "testbucket" and upload [stocks.csv](https://raw.githubusercontent.com/kongc-organization/greenplum-minio/master/minio/S3Examples/stocks.csv) into the bucket.
 
-##<a id='gpdb-docker'></a> Set Up a Greenplum Docker Instance
 
-1. Pull the Greenplum Database (GPDB) Docker image.
+##<a id='backup-to-minio'></a> Backup and Restore Data to a Minio Object Store
 
-    ```
-    docker pull kochanpivotal/gpdb5oss
-    ```
+The S3 storage plugin lets you use Minio for Pivotal Greenplum to store and retrieve backups when you run gpbackup and gprestore. The Minio object store provides high performance, durable, and secure storage for backups.
 
-2. Run the GPDB docker container.
+Using S3 Storage Plugin with gpbackup and gprestore: [link](https://gpdb.docs.pivotal.io/5150/admin_guide/managing/backup-s3-plugin.html)
 
-    ```
-    ubuntu@host:~$ docker run -it --hostname=gpdbsne --publish 5432:5432 --publish 88:22 kochanpivotal/gpdb5oss bin/bash
-    /bin/run-parts
-    Running /docker-entrypoint.d
-    Running bin/bash
-    root@gpdbsne:/#
-    ```
+Greenplum S3 configuration: [link](https://gpdb.docs.pivotal.io/5150/admin_guide/external/g-s3-protocol.html)
 
-3. Start GPDB in the container.
 
-    ```
-    ubuntu@host:~$ root@gpdbsne:/# startGPDB.sh 
-    SSHD isn't running
-    * Starting OpenBSD Secure Shell server sshd      [ OK ] 
-    SSHD is running...
-    20190107:21:18:21:000073 gpstart:gpdbsne:gpadmin-[INFO]:-Starting gpstart with args: -a
-    20190107:21:18:21:000073 gpstart:gpdbsne:gpadmin-[INFO]:-Gathering information and validating the environment...
-    20190107:21:18:21:000073 gpstart:gpdbsne:gpadmin-[INFO]:-Greenplum Binary Version: 'postgres (Greenplum Database) 5.15.1 build ff9097d-oss'
-    20190107:21:18:21:000073 gpstart:gpdbsne:gpadmin-[INFO]:-Greenplum Catalog Version: '301705051'
-    20190107:21:18:21:000073 gpstart:gpdbsne:gpadmin-[INFO]:-Starting Master instance in admin mode
-    20190107:21:18:22:000073 gpstart:gpdbsne:gpadmin-[INFO]:-Obtaining Greenplum Master catalog information
-    20190107:21:18:22:000073 gpstart:gpdbsne:gpadmin-[INFO]:-Obtaining Segment details from master...
-    20190107:21:18:22:000073 gpstart:gpdbsne:gpadmin-[INFO]:-Setting new master era
-    20190107:21:18:22:000073 gpstart:gpdbsne:gpadmin-[INFO]:-Master Started...
-    20190107:21:18:22:000073 gpstart:gpdbsne:gpadmin-[INFO]:-Shutting down master
-    20190107:21:18:24:000073 gpstart:gpdbsne:gpadmin-[INFO]:-Commencing parallel segment instance startup, please wait...
-    ..... 
-    20190107:21:18:29:000073 gpstart:gpdbsne:gpadmin-[INFO]:-Process results...
-    20190107:21:18:29:000073 gpstart:gpdbsne:gpadmin-[INFO]:-----------------------------------------------------
-    20190107:21:18:29:000073 gpstart:gpdbsne:gpadmin-[INFO]:-   Successful segment starts                                            = 2
-    20190107:21:18:29:000073 gpstart:gpdbsne:gpadmin-[INFO]:-   Failed segment starts                                                = 0
-    20190107:21:18:29:000073 gpstart:gpdbsne:gpadmin-[INFO]:-   Skipped segment starts (segments are marked down in configuration)   = 0
-    20190107:21:18:29:000073 gpstart:gpdbsne:gpadmin-[INFO]:-----------------------------------------------------
-    20190107:21:18:29:000073 gpstart:gpdbsne:gpadmin-[INFO]:-Successfully started 2 of 2 segment instances 
-    20190107:21:18:29:000073 gpstart:gpdbsne:gpadmin-[INFO]:-----------------------------------------------------
-    20190107:21:18:29:000073 gpstart:gpdbsne:gpadmin-[INFO]:-Starting Master instance gpdbsne directory /gpdata/master/gpseg-1 
-    20190107:21:18:30:000073 gpstart:gpdbsne:gpadmin-[INFO]:-Command pg_ctl reports Master gpdbsne instance active
-    20190107:21:18:30:000073 gpstart:gpdbsne:gpadmin-[INFO]:-No standby master configured.  skipping...
-    20190107:21:18:30:000073 gpstart:gpdbsne:gpadmin-[INFO]:-Database successfully started
-    20190107:21:18:30:000216 gpstart:gpdbsne:gpadmin-[INFO]:-Starting gpstart with args: -a
-    20190107:21:18:30:000216 gpstart:gpdbsne:gpadmin-[INFO]:-Gathering information and validating the environment...
-    20190107:21:18:30:000216 gpstart:gpdbsne:gpadmin-[INFO]:-Greenplum Binary Version: 'postgres (Greenplum Database) 5.15.1 build ff9097d-oss'
-    20190107:21:18:31:000216 gpstart:gpdbsne:gpadmin-[INFO]:-Greenplum Catalog Version: '301705051'
-    20190107:21:18:31:000216 gpstart:gpdbsne:gpadmin-[WARNING]:-postmaster.pid file exists on Master, checking if recovery startup required
-    20190107:21:18:31:000216 gpstart:gpdbsne:gpadmin-[INFO]:-Commencing recovery startup checks
-    20190107:21:18:31:000216 gpstart:gpdbsne:gpadmin-[INFO]:-Have lock file /tmp/.s.PGSQL.5432 and a process running on port 5432
-    20190107:21:18:31:000216 gpstart:gpdbsne:gpadmin-[ERROR]:-gpstart error: Master instance process running
-    root@gpdbsne:/#
-    ```
 
-4. Create an s3 protocol configuration file named `s3.conf` in `gpadmin` user's home directory.
+##<a id='load-greenplum-to-minio'></a> Loading and Unloading Greenplum Data to a Minio Object Store
 
-    ```
-    root@gpdbsne:/# cat <<EOF > /home/gpadmin/s3.conf
-    > [default]
-    > secret = "minio123"
-    > accessid = "minio"
-    > threadnum = 6
-    > chunksize = 671088654
-    > loglevel = DEBUG
-    > encryption = false
-    > version = 2
-    > EOF
-    root@gpdbsne:/# 
-    ```
+Greenplum database supports loading and unloading data from several types of external data sources, including objects stored in a Minio object store. Objects in a Minio object store can contain unstructured data, text files, log files, time series data, and Greenplum tables.
 
-5. Run the `psql` utility.
+* Data previously stored in a Minio object store can be loaded into Greenplum.
+* A developer can load data from Greenplum tables into a Minio object store for access by an external application.
+* External applications can write data to a Minio object store which can then be loaded into Greenplum.
 
-    ```
-    root@gpdbsne:/# psql -h localhost -U gpadmin gpadmin
-    psql (9.5.14, server 8.3.23)
-    Type "help" for help.
+Loading and Unloading Data: [link](https://gpdb.docs.pivotal.io/530/admin_guide/load/topics/g-loading-and-unloading-data.html)
 
-    gpadmin=#
-    ```
+Greenplum S3 configuration: [link](https://gpdb.docs.pivotal.io/5150/admin_guide/external/g-s3-protocol.html)
 
-6. Type these commands to create the read and write function for S3.
 
-    ```
-    CREATE OR REPLACE FUNCTION read_from_s3() RETURNS integer AS'$libdir/gps3ext.so','s3_import' LANGUAGE C STABLE;
-    CREATE OR REPLACE FUNCTION write_to_s3() RETURNS integer AS '$libdir/gps3ext.so', 's3_export' LANGUAGE C STABLE;
-    CREATE PROTOCOL s3 (writefunc = write_to_s3,readfunc = read_from_s3);
-    ```
 
-    For example:
+##<a id='access-s3-table-in-minio'></a> Access an S3 External Table Stored in a Minio Object Store
 
-    ```
-    gpadmin=# CREATE OR REPLACE FUNCTION read_from_s3() RETURNS integer AS'$libdir/gps3ext.so','s3_import' LANGUAGE C STABLE;
-    CREATE FUNCTION
-    gpadmin=# 
-    gpadmin=# CREATE OR REPLACE FUNCTION write_to_s3() RETURNS integer AS '$libdir/gps3ext.so', 's3_export' LANGUAGE C STABLE;
-    CREATE FUNCTION
-    gpadmin=# 
-    gpadmin=# CREATE PROTOCOL s3 (writefunc = write_to_s3,readfunc = read_from_s3);
-    CREATE PROTOCOL
-    gpadmin=# 
-    ```
+Greenplum developers can query data held in an S3 external table. Data stored in a Minio object store can be used as an external S3 table.
 
-7. Create external table that refers to the  Minio instance that uses the hostname minio1 with port 9000.
+Defining External Tables: [link](https://gpdb.docs.pivotal.io/530/admin_guide/external/g-external-tables.html)
 
-    ```
-    CREATE EXTERNAL TABLE stock_fact_external (
-    stock text,
-    stock_date text,
-    price text
-    ) LOCATION('s3://minio1:9000/testbucket/stocks.csv config=/home/gpadmin/s3.conf') FORMAT 'TEXT'(DELIMITER=',');
-    ```
-
-    For example:
-
-    ```
-    gpadmin=# CREATE EXTERNAL TABLE stock_fact_external (
-    gpadmin(# stock text,
-    gpadmin(# stock_date text,
-    gpadmin(# price text
-    gpadmin(# )
-    gpadmin-# LOCATION('s3://minio1:9000/testbucket/stocks.csv config=/home/gpadmin/s3.conf')
-    gpadmin-# FORMAT 'TEXT'(DELIMITER=',');
-    CREATE EXTERNAL TABLE
-    gpadmin=#
-    ```
-
-8. Verify that Greenplum can read data from Minio via S3 external table.
-
-    ```
-    gpadmin=# select count(*) from stock_fact_external;
-    count
-    -------
-    561
-    (1 row)
-    gpadmin=# select * from stock_fact_external limit 10;
-    stock  | stock_date | price
-    --------+------------+-------
-    symbol | date       | price
-    MSFT   | Jan 1 2000 | 39.81
-    MSFT   | Feb 1 2000 | 36.35
-    MSFT   | Mar 1 2000 | 43.22
-    MSFT   | Apr 1 2000 | 28.37
-    MSFT   | May 1 2000 | 25.45
-    MSFT   | Jun 1 2000 | 32.54
-    MSFT   | Jul 1 2000 | 28.4
-    MSFT   | Aug 1 2000 | 28.4
-    MSFT   | Sep 1 2000 | 24.53
-    (10 rows)
-    ```
+Greenplum S3 configuration: [link](https://gpdb.docs.pivotal.io/5150/admin_guide/external/g-s3-protocol.html)
 
