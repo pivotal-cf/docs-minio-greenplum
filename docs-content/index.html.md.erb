@@ -30,12 +30,12 @@ Minio servers and any other Amazon S3 compatible server.
 notification service. Supported targets are message queues (Kafka, NATS, AMQP, MQTT) and Webhooks. Thumbnail 
 generation, OCR, and audit compliance are good examples of lambda computing.
 * **Encryption and Tamper-Proof:** Minio provides tamper-proof encryption for each object with zero performance 
-impact. Both server side and client side encryption is supported. Minio supports AES-256-GCM, ChaCha20-Poly1305 and AES-CBC.
+impact. Both server side and client side encryption is supported. Minio supports AES-256-GCM, ChaCha20-Poly1305, and AES-CBC.
 * **Flexible:** Minio can be deployed on bare-metal servers or as a virtual machines in clusters of 1 to 32 
 nodes. Clusters are combined into federations to support web-scale Object store deployments.
-* **Pluggable Storage Backend:** Minio's supports DAS and external storage such as NAS, 
+* **Pluggable Storage Backend:** Minio supports DAS and external storage such as NAS, 
 Google Cloud Storage, and Azure Blob Storage. The Minio S3 API is 100% compatible with the Amazon S3 
-API and the objects are stored natively on NAS, GCS or Azure. Minio works with existing so no migration is required to access externally stored objects via Minio.
+API and the objects are stored natively on NAS, GCS, or Azure. Minio works with existing so no migration is required to access externally stored objects via Minio.
 
 
 ## <a id="snapshot"></a>Product Snapshot
@@ -59,7 +59,7 @@ The following table provides version and version-support information about Minio
     </tr>
     <tr>
         <td>IaaS support</td>
-        <td>AWS, Azure, GCP, OpenStack, vSphere, and Bare-metal</td>
+        <td>AWS, Azure, GCP, OpenStack, vSphere, and bare metal</td>
     </tr>
 </table>
 
