@@ -1,0 +1,63 @@
+---
+title: Installing Minio for Pivotal Greenplum
+owner: Partners
+---
+
+This topic describes how to install Minio for Pivotal Greenplum.
+
+
+MinIO runs either as a standalone object server or as a highly available distributed cluster.
+
+* As a standalone server that uses a file directory to store objects.
+* As a standalone server that uses erasure code protection to write object data across many physical drives.
+* On multiple servers using a distributed mode which pools many servers, each with many physical drives, into a single highly available object storage cluster.
+
+
+##<a id='standalone'></a> Running MinIO as a standalone server
+In this example we show how to start the MinIO server using a file directory to store objects.
+
+* Download Minio for Pivotal Greenplum
+* Create a directory to store the objects, such as “/home/shared”
+* Start the minio server with the following command.
+
+```
+    $ minio server /home/shared
+```
+
+MinIO Server comes with an embedded web based object browser. Point your web browser to http://127.0.0.1:9000 to access the object server. From the web browser you will be able to create a new bucket, upload files to the bucket, and download files from the bucket.
+
+
+##<a id='erasure-code'></a>  Running MinIO as a standalone server with erasure code protection
+In this example we show how to start the MinIO server using erasure code on a server with 24 drives.
+
+* Download Minio for Pivotal Greenplum
+* Format the 24 individual drives.
+* Mount the drives using a common naming scheme, such as “/mnt/export1” through “/mnt/export24”.
+* Start the erasure coded minio server with the following command.
+
+```
+    $ minio server /mnt/export{1…24}
+```
+
+MinIO Server comes with an embedded web based object browser. Point your web browser to http://127.0.0.1:9000 to access the object server.From the web browser you will be able to create a new bucket, upload files to the bucket, and download files from the bucket.
+
+
+##<a id='distributed-cluster'></a> Running MinIO as a distributed object storage cluster
+In this example we show how to create a distributed MinIO cluster based on 8 server nodes with 24 drives each.
+
+* On each server download Minio for Pivotal Greenplum
+* On each server format the 24 individual drives
+* On each server mount the drives using a common naming scheme, such as “/mnt/export1” through “/mnt/export24”
+* Start the distributed minio server by running the following command on each server.
+
+```
+     $ export MINIO_ACCESS_KEY=minio
+     $ export MINIO_SECRET_KEY=miniostorage
+     $ minio server http://nodename{1...8}.domainname.com/mnt/export/{1...24}
+```
+
+To access the MinIO object server point your web browser to one of the servers, for example: http://nodename.domainname.com:9000. From the web browser you will be able to create a new bucket, upload files to the bucket, and download files from the bucket.
+
+
+##<a id='minio-documentation'></a> MinIO Documentation
+The full documentation for the MinIO server is located here [link] (https://docs.minio.io/)
