@@ -8,7 +8,7 @@ This topic describes how to install Minio for Pivotal Greenplum.
 MinIO runs either as a standalone object server or as a highly available distributed cluster.
 
 * As a standalone server that uses a file directory to store objects.
-* As a standalone server that uses erasure code protection to write object data across many physical drives.
+* As a standalone server that uses erasure-code protection to write object data across many physical drives.
 * On multiple servers, using a distributed mode which pools many servers, each with many physical drives,
   into a single highly available object storage cluster.
 
@@ -30,14 +30,14 @@ Point your web browser to http://127.0.0.1:9000 to access the object server.
 From the web browser, you can create a new bucket, upload files to the bucket, and download files from the bucket.
 
 
-##<a id='erasure-code'></a>  Running MinIO as a standalone server with erasure code protection
+##<a id='erasure-code'></a>  Running MinIO as a Standalone Server with Erasure-Code Protection
 
 This example shows how to start the MinIO server using erasure code on a server with 24 drives.
 
 * Download Minio for Pivotal Greenplum.
 * Format the 24 individual drives.
 * Mount the drives using a common naming scheme, such as “/mnt/export1” through “/mnt/export24”.
-* Start the erasure coded minio server with the following command.
+* Start the erasure-coded minio server with the following command.
 
 ```
     $ minio server /mnt/export{1…24}
